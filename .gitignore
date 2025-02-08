@@ -1,0 +1,21 @@
+# Visual Studio specific
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.log
+*.pdb
+
+# ASP.NET Core
+appsettings.Development.json
+appsettings.json
+wwwroot/
+node_modules/
+
+# Build output
+*.dll
+*.exe
+*.out
+*.log
