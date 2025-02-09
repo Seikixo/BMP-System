@@ -5,8 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BMPBackend.Modules.FinanceModule.Model;
 
-namespace BMPBackend.Modules.UserModule.Model
+namespace BMPBackend.Modules.UserModule.User
 {
     public enum UserRole
     {
@@ -25,7 +26,7 @@ namespace BMPBackend.Modules.UserModule.Model
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
-        //public ICollection<Report> Reports { get; set; } = new List<Report>();
+        public ICollection<Finance> Finances { get; set; } = new List<Finance>();
     }
 
     public class UserConfigurations : IEntityTypeConfiguration<User>
@@ -59,9 +60,9 @@ namespace BMPBackend.Modules.UserModule.Model
             builder.Property(x => x.UpdatedAt)
                 .IsRequired();
 
-            /*builder.HasMany(x => x.Reports)
+            builder.HasMany(x => x.Finances)
                 .WithOne(x => x.User)
-                .HasForeignKey(x => x.UserId);*/
+                .HasForeignKey(x => x.UserId);
         }
     }
 }

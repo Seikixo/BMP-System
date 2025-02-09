@@ -1,4 +1,5 @@
-﻿using BMPBackend.Modules.UserModule.Model;
+﻿using BMPBackend.Modules.FinanceModule.Model;
+using BMPBackend.Modules.UserModule.User;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -54,7 +55,6 @@ namespace BMPBackend.Data_Access
         }
 
         public DbSet<User> Users { get; set; }
-
-
+        public DbSet<Finance> Finances { get; set; }
     }
 }
