@@ -6,14 +6,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BMPBackend.Modules.FinanceModule.Model;
+using BMPBackend.Modules.CustomerModule.Model;
 
 namespace BMPBackend.Modules.UserModule.User
 {
     public enum UserRole
     {
         Admin,
-        SalesPerson,
-        Manager
+        Employee
+
     }
     public class User
     {
@@ -26,7 +27,8 @@ namespace BMPBackend.Modules.UserModule.User
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
-        public ICollection<Finance> Finances { get; set; } = new List<Finance>();
+        public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+        public ICollection<Customer> Customers { get; set; } = new List<Customer>();
     }
 
     public class UserConfigurations : IEntityTypeConfiguration<User>
@@ -42,8 +44,7 @@ namespace BMPBackend.Modules.UserModule.User
                 .HasMaxLength(100);
 
             builder.Property(x => x.Email)
-                .HasMaxLength(100)
-                .IsRequired();
+                .HasMaxLength(100);
 
             builder.Property(x => x.Password)
                 .HasMaxLength(100)
@@ -60,7 +61,11 @@ namespace BMPBackend.Modules.UserModule.User
             builder.Property(x => x.UpdatedAt)
                 .IsRequired();
 
-            builder.HasMany(x => x.Finances)
+            builder.HasMany(x => x.Customers)
+                .WithOne(x => x.User)
+                .HasForeignKey(x => x.UserId);
+
+            builder.HasMany(x => x.Transactions)
                 .WithOne(x => x.User)
                 .HasForeignKey(x => x.UserId);
         }

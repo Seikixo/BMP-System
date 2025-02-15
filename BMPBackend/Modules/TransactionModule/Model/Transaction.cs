@@ -16,7 +16,7 @@ namespace BMPBackend.Modules.FinanceModule.Model
         Refund
     }
 
-    public class Finance
+    public class Transaction
     {
         public int Id { get; set; }
         public FinanceType Type { get; set; }
@@ -27,9 +27,9 @@ namespace BMPBackend.Modules.FinanceModule.Model
         public User User { get; set; }
     }
 
-    public class FinanceConfiguration : IEntityTypeConfiguration<Finance>
+    public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
     {
-        public void Configure(EntityTypeBuilder<Finance> builder)
+        public void Configure(EntityTypeBuilder<Transaction> builder)
         {
             builder.HasKey(x => x.Id);
 
@@ -54,7 +54,7 @@ namespace BMPBackend.Modules.FinanceModule.Model
                 .IsRequired();
 
             builder.HasOne(r => r.User)
-                .WithMany(x => x.Finances)
+                .WithMany(x => x.Transactions)
                 .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
