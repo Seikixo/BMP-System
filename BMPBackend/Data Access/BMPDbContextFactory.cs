@@ -1,37 +1,39 @@
-﻿using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace BMPBackend.Data_Access
 {
-    public class BMPDbContextFactory
+    public class BMPDbContextFactory : IDesignTimeDbContextFactory<BMPDbContext>
     {
-        public class PracticeDbContextFactory : IDesignTimeDbContextFactory<BMPDbContext>
+        public BMPDbContext CreateDbContext(string[] args)
         {
-            public BMPDbContext CreateDbContext(string[] args)
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
+
+            var sqlServerDefault = configuration["DatabaseProviders:Local:IsDefault"];
+            if (sqlServerDefault?.ToUpper() != "TRUE")
             {
-                var optionsBuilder = new DbContextOptionsBuilder<DbContext>();
-                var builder = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json");
-                var config = builder.Build();
-                var sqlServerDefault = config.GetSection("DatabaseProviders")
-                    .GetSection("Local")["IsDefault"] ?? "";
-
-                if (sqlServerDefault.ToUpper() == "TRUE")
-                {
-                    var connString = config.GetSection("DatabaseProviders")
-                        .GetSection("Local")["ConnectionString"];
-                    optionsBuilder.UseSqlServer(connString);
-                }
-
-                return new BMPDbContext(optionsBuilder.Options);
+                throw new Exception("No default database provider is set!");
             }
+
+            var connectionString = configuration["DatabaseProviders:Local:ConnectionString"];
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new Exception("Database connection string is missing!");
+            }
+
+            var optionsBuilder = new DbContextOptionsBuilder<BMPDbContext>();
+            optionsBuilder.UseSqlServer(connectionString, options =>
+            {
+                options.EnableRetryOnFailure();
+                options.CommandTimeout(300);
+            });
+
+            return new BMPDbContext(optionsBuilder.Options);
         }
     }
 }

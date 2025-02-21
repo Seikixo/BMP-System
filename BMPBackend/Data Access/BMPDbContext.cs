@@ -1,60 +1,29 @@
-﻿using BMPBackend.Modules.FinanceModule.Model;
-using BMPBackend.Modules.UserModule.User;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using BMPBackend.Modules.CustomerModule.Model;
+using BMPBackend.Modules.FinanceModule.Model;
+using BMPBackend.Modules.UserModule.User;
 
 namespace BMPBackend.Data_Access
 {
     public class BMPDbContext : DbContext
     {
-        public BMPDbContext()
+        public BMPDbContext(DbContextOptions<BMPDbContext> options) : base(options)
         {
-
-        }
-
-        public BMPDbContext(DbContextOptions<DbContext> options)
-        {
-
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
             var assembly = Assembly.GetAssembly(GetType());
             modelBuilder.ApplyConfigurationsFromAssembly(assembly);
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json");
-            var config = builder.Build();
-            var sqlServerDefault = config.GetSection("DatabaseProviders")
-                .GetSection("Local")["IsDefault"] ?? "";
-
-            if (sqlServerDefault.ToUpper() == "TRUE")
-            {
-                var connString = config.GetSection("DatabaseProviders")
-                    .GetSection("Local")["ConnectionString"];
-                optionsBuilder.UseSqlServer(connString, option =>
-                {
-                    option.EnableRetryOnFailure();
-                    option.CommandTimeout(300);
-                });
-            }
-
-            optionsBuilder.EnableSensitiveDataLogging();
-        }
-
         public DbSet<User> Users { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<Payment> Payments { get; set; }
     }
 }

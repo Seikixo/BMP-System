@@ -26,6 +26,8 @@ namespace BMPBackend.Modules.CustomerModule.Model
 
         public int CustomerId { get; set; }
         public Customer Customer { get; set; }
+
+        public ICollection<Payment> Payments { get; set; } = new List<Payment>();
     }
 
     public class OrderConfiguration : IEntityTypeConfiguration<Order>
@@ -45,6 +47,7 @@ namespace BMPBackend.Modules.CustomerModule.Model
 
             builder.Property(x => x.OrderStatus)
                 .HasConversion<string>()
+                .HasDefaultValue(OrderStatus.Pending)
                 .IsRequired();
 
             builder.Property(x => x.OrderDate)
