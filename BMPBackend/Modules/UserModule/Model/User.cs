@@ -23,6 +23,7 @@ namespace BMPBackend.Modules.UserModule.User
         public string LastName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
+        public int PhoneNumber { get; set; }
         public UserRole Role { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
@@ -48,6 +49,9 @@ namespace BMPBackend.Modules.UserModule.User
 
             builder.Property(x => x.Password)
                 .HasMaxLength(100)
+                .IsRequired();
+
+            builder.Property(x => x.PhoneNumber)
                 .IsRequired();
 
             builder.Property(x => x.Role)
