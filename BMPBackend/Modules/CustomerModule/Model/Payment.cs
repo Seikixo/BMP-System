@@ -15,12 +15,20 @@ namespace BMPBackend.Modules.CustomerModule.Model
         Cancelled
     }
 
+    public enum PaymentMethod
+    {
+        Cash,
+        Card,
+        BankTransfer
+    }
+
     public class Payment
     {
         public int Id { get; set; }
-        public DateTime PaymentDate { get; set; }
-        public decimal PaymentAmount { get; set; }
+        public DateTime Date { get; set; }
+        public decimal Amount { get; set; }
         public PaymentStatus PaymentStatus { get; set; }
+        public PaymentMethod PaymentMethod { get; set; }
 
         public int OrderId { get; set; }
         public Order Order { get; set; }
@@ -37,16 +45,21 @@ namespace BMPBackend.Modules.CustomerModule.Model
 
             builder.HasIndex(x => x.OrderId);
 
-            builder.Property(x => x.PaymentDate)
+            builder.Property(x => x.Date)
                 .IsRequired();
 
-            builder.Property(x => x.PaymentAmount)
+            builder.Property(x => x.Amount)
                 .HasColumnType("decimal(18,2)")
                 .IsRequired();
 
             builder.Property(x => x.PaymentStatus)
                 .HasConversion<string>()
                 .HasDefaultValue(PaymentStatus.Pending)
+                .IsRequired();
+
+            builder.Property(x => x.PaymentMethod)
+                .HasConversion<string>()
+                .HasDefaultValue(PaymentMethod.Cash)
                 .IsRequired();
 
             builder.HasOne(r => r.Order)
